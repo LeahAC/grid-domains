@@ -9,6 +9,6 @@ Note: Depending on your pip version, the bellman loss might run or fail. Try to 
 
 Example usage:
 
-$ cd sokoban
-$ cd train
+$ cd sokoban\
+$ cd train\
 $ python3 main.py --alg astar --loss lstar
