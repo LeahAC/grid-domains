@@ -8,7 +8,7 @@ from nn_struct_old import NN
 from train_sok import to_categorical_tensor
 from get_neighbours import get_neighbors
 
-dim = 15 # dimensions set to 15*15 during training
+dim = 15 
 
 nn = NN(dim)
 nn.model.load_weights('por5')
@@ -92,6 +92,7 @@ def Gbfs_bell(init):
         if (time.time() - start) > 600:
             return None, float("inf")
         if check_goal(stateName):
+            print("GOAL")
             end = time.time()
             G_state = stateName
             actions=[]
@@ -162,14 +163,13 @@ def find_traj_states(init_key,G_state):#key states = traj, child states #nogoal 
         goal_key = pred
     key_states.append(str(init_key).replace("\n",''))
     #remove goal_key
-    print(init_key)
     del key_states[0]
     return key_states
 
 def find_child_states(traj_states):
     child_states = []
     for traj in traj_states:
-        child_states.append(list(G.successors(traj.replace("\n",''))))
+        child_states.append(np.array(list(G.successors(traj.replace("\n",'')))))
     return child_states
 
 

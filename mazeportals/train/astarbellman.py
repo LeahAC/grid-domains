@@ -8,14 +8,13 @@ from nn_struct_old import NN
 from train_sok import to_categorical_tensor
 from get_neighbours import get_neighbors
 
-dim = 15 # dimensions set to 10*10 during training
+dim = 15 
 
-nn = NN(15)
-nn.model.load_weights('por5').expect_partial()
+nn = NN(dim)
+nn.model.load_weights('por5')
 
 G = nx.DiGraph() #attributes of G are global
 key_states = []
-
 
 def check_goal(stateName):
     state = evaluate_state(stateName)
@@ -55,7 +54,6 @@ class PriorityQ:
         return len(self.elements)
 
 def Astar_bell(init):
-    print(init,"\n")
     start = time.time()
     closedSet={}
     openSet={}
@@ -87,10 +85,9 @@ def Astar_bell(init):
     openSet[str(init)]=[0,h,h,[],[]]
     state = openSet[str(init)] #Stores the g,h,f,[],[]
     stateName = str(init)
-    G.add_node(str(init).replace('\n', ''), o=1, g = 0)
+    G.add_node(str(init).replace('\n', ''), o = 1, g = 0)
 
     states_expanded = 0
-    
     while True:
         if (time.time() - start) > 600:
             return None, float("inf")
@@ -104,9 +101,7 @@ def Astar_bell(init):
                   actions.append(closedSet[str(stateName)][4])
                   stateName=closedSet[str(stateName)][3]    
             traj_states = find_traj_states(init,G_state)#find_no_of_states
-            #print("trajstates",traj_states,"\n")
             child_states = find_child_states(traj_states)
-            #print("csates",child_states)
             true_cost = np.arange(1,len(actions)+1)
             X_Train, Child_X = create_minibatch(traj_states,child_states,portal)
             traj_states.clear()
@@ -161,7 +156,7 @@ def Astar_bell(init):
 
 def find_traj_states(init_key,G_state):#key states = traj, child states #nogoal states
     goal_key = G_state.replace("\n",'')
-    while len(list(G.predecessors(goal_key.replace("\n",''))))!= 0:
+    while len(list(G.predecessors(goal_key)))!= 0:
         key_states.append(goal_key)
         pred = list(G.predecessors(goal_key))[0]
         goal_key = pred
@@ -173,13 +168,7 @@ def find_traj_states(init_key,G_state):#key states = traj, child states #nogoal 
 def find_child_states(traj_states):
     child_states = []
     for traj in traj_states:
-        #print("traj",evaluate_state(traj.replace("\n",'')),"\n")
-        temp = []
-        for child in list(G.successors(traj.replace("\n",''))):
-            #print("child", evaluate_state(child),"\n")
-            temp.append(child.replace("\n",''))
-    child_states.append(temp)
-    temp.clear()
+        child_states.append(np.array(list(G.successors(traj.replace("\n",'')))))
     return child_states
 
 
@@ -189,9 +178,9 @@ def create_minibatch(traj_states,child_states,portal):
     Child_Train_X = []
     for k in traj_states:
         X_Train.append(to_categorical_tensor(evaluate_state(k),portal,dim))
-
     for children in child_states:
         for child in children:
+            #print(evaluate_state(child),"\n")
             temp_child_x.append(to_categorical_tensor(evaluate_state(child),portal,dim))
         Child_Train_X.append(np.array(temp_child_x))
         temp_child_x = []
