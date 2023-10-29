@@ -5,7 +5,7 @@ This repository contains the grid domains, namely, Sokoban, Maze-with-teleports 
 
 Dependencies\
 
-Tensorflow: Version: 2.14.0\
+Tensorflow: Version: 2.14.0
 Numpy version: 1.21.1
 
 Note: Astar/Gbfs with bellman loss might fail for some higher pip versions.  Try to downgrade pip if that is the case.
