@@ -3,7 +3,7 @@ Code for NeurIPS 2023 paper Optimize Planning Heuristics to Rank, not to Estimat
 
 This repository contains the grid domains, namely, Sokoban, Maze-with-teleports and Sliding tile. 
 
-Dependencies\
+Dependencies:
 
 Tensorflow: Version: 2.14.0
 Numpy version: 1.21.1
